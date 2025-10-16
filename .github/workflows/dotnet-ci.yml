@@ -1,0 +1,49 @@
+name: .NET CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Выгрузка репозитория
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Установка .NET SDK
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      # 3️⃣ Восстановление зависимостей (для решения .sln)
+      - name: Restore dependencies
+        run: dotnet restore GitAction.sln
+
+      # 4️⃣ Сборка решения
+      - name: Build solution
+        run: dotnet build GitAction.sln --no-restore --configuration Release
+
+      # 5️⃣ Запуск тестов и создание отчёта
+      - name: Run NUnit tests
+        run: dotnet test GitActionTests/GitActionTests.csproj --no-build --logger "trx;LogFileName=TestResults.trx" --results-directory ./TestResults
+
+      # 6️⃣ Загрузка отчёта как артефакта
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: NUnit-TestResults
+          path: TestResults
+
+      # 7️⃣ (опционально) Выгрузка кода, если тесты прошли успешно
+      - name: Upload source code
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: SourceCode
+          path: GitAction/
