@@ -32,7 +32,7 @@ jobs:
 
       # 5️⃣ Запуск тестов и создание отчёта
       - name: Run NUnit tests
-        run: dotnet test GitAction.sln --no-build --logger "trx;LogFileName=TestResults.trx" --results-directory ./TestResults
+        run: dotnet test ./GitActionTests/GitActionTests.csproj --no-build --logger "trx;LogFileName=TestResults.trx" --results-directory ./TestResults
         
       # 6️⃣ Загрузка отчёта как артефакта
       - name: Upload test results
