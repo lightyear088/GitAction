@@ -24,11 +24,11 @@ jobs:
 
       # 3️⃣ Восстановление зависимостей (для решения .sln)
       - name: Restore dependencies
-        run: dotnet restore GitAction.sln
+        run: dotnet restore GitActionRep.sln
 
       # 4️⃣ Сборка решения
       - name: Build solution
-        run: dotnet build GitAction.sln --no-restore --configuration Release
+        run: dotnet build GitActionRep.sln --no-restore --configuration Release
 
       # 5️⃣ Запуск тестов и создание отчёта
       - name: Run NUnit tests
