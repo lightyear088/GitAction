@@ -44,9 +44,15 @@ jobs:
 
       # 7️⃣ Generate HTML report
       - name: Generate HTML report
+        shell: pwsh
         run: |
           mkdir TestResultsHtml
-          reportgenerator "-reports:TestResults/*/coverage.cobertura.xml" "-targetdir:TestResultsHtml" -reporttypes:Html
+          $coverageFile = Get-ChildItem -Recurse -Path TestResults -Filter coverage.cobertura.xml | Select-Object -First 1
+          if (-not $coverageFile) {
+              Write-Host "Coverage file not found, skipping report generation."
+              exit 0
+          }
+          reportgenerator "-reports:$coverageFile" "-targetdir:TestResultsHtml" -reporttypes:Html
 
       # 8️⃣ Upload HTML report
       - name: Upload HTML report
