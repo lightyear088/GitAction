@@ -29,13 +29,13 @@ jobs:
       - name: Run NUnit tests
         run: dotnet test ./GitActionTests/GitActionTests.csproj --logger "trx;LogFileName=TestResults.trx" --results-directory ./TestResults
 
-      - name: Install ReportUnit
-        run: dotnet tool install -g ReportUnit
+      - name: Install ReportGenerator
+        run: dotnet tool install -g dotnet-reportgenerator-globaltool
 
       - name: Generate HTML report
         run: |
           mkdir TestResultsHtml
-          ReportUnit TestResults/TestResults.trx TestResultsHtml
+          reportgenerator "-reports:TestResults/TestResults.trx" "-targetdir:TestResultsHtml" -reporttypes:Html
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
