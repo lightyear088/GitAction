@@ -9,7 +9,7 @@ on:
 
 jobs:
   build_and_test:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest   # <-- смена на Windows
 
     steps:
       # 1️⃣ Выгрузка репозитория
@@ -22,18 +22,18 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
-      # 3️⃣ Восстановление зависимостей (для решения .sln)
+      # 3️⃣ Восстановление зависимостей
       - name: Restore dependencies
         run: dotnet restore GitActionRep.sln
 
       # 4️⃣ Сборка решения
       - name: Build solution
-        run: dotnet build GitActionRep.sln --no-restore --configuration Release
+        run: dotnet build GitActionRep.sln --configuration Release
 
       # 5️⃣ Запуск тестов и создание отчёта
       - name: Run NUnit tests
-        run: dotnet test ./GitActionTests/GitActionTests.csproj --no-build --logger "trx;LogFileName=TestResults.trx" --results-directory ./TestResults
-        
+        run: dotnet test ./GitActionTests/GitActionTests.csproj --logger "trx;LogFileName=TestResults.trx" --results-directory ./TestResults
+
       # 6️⃣ Загрузка отчёта как артефакта
       - name: Upload test results
         uses: actions/upload-artifact@v4
