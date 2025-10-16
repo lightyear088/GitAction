@@ -33,23 +33,20 @@ jobs:
       # 5️⃣ Run NUnit tests with coverage
       - name: Run NUnit tests with coverage
         run: |
-          dotnet add ./GitActionTests/GitActionTests.csproj package coverlet.collector
           dotnet test ./GitActionTests/GitActionTests.csproj `
-            --logger "trx;LogFileName=TestResults.trx" `
             --results-directory ./TestResults `
-            /p:CollectCoverage=true `
-            /p:CoverletOutput=TestResults/coverage.opencover.xml `
-            /p:CoverletOutputFormat=opencover
+            --collect:"XPlat Code Coverage" `
+            --logger "trx;LogFileName=TestResults.trx"
 
       # 6️⃣ Install ReportGenerator
       - name: Install ReportGenerator
         run: dotnet tool install -g dotnet-reportgenerator-globaltool
 
-      # 7️⃣ Generate HTML report with coverage
+      # 7️⃣ Generate HTML report
       - name: Generate HTML report
         run: |
           mkdir TestResultsHtml
-          reportgenerator "-reports:TestResults/coverage.opencover.xml" "-targetdir:TestResultsHtml" -reporttypes:Html
+          reportgenerator "-reports:TestResults/*/coverage.cobertura.xml" "-targetdir:TestResultsHtml" -reporttypes:Html
 
       # 8️⃣ Upload HTML report
       - name: Upload HTML report
